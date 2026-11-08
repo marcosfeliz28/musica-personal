@@ -19,7 +19,7 @@
 - Biblioteca musical propia, sin suscripción mensual, escuchable desde el iPhone.
 - Fuentes: biblioteca local (`music/local/`), música gratuita y legal (Jamendo, Internet Archive) y radios por internet (solo mencionadas, no configuradas).
 - Acceso remoto privado con Tailscale, sin abrir puertos en el router.
-- Funciones: listas de reproducción, buscador, favoritos, aleatorio, historial, organización por artistas y álbumes.
+- Funciones: listas de reproducción, buscador, favoritos, aleatorio, organización por artistas y álbumes e historial (este último **parcial**: contador de reproducciones; el historial completo puede requerir scrobbling, ver sección 5).
 - Fuera de alcance: Spotify, YouTube Music y descargas de servicios comerciales; exposición pública a Internet.
 
 ## 2) Arquitectura
@@ -66,15 +66,16 @@
 4. Poner tu música en `music/local/` (o apuntar `MUSICA_LOCAL` a tu carpeta).
 5. Validar: `docker compose config`
 6. Arrancar: `docker compose up -d && docker compose ps && docker compose logs -f navidrome`
-7. Abrir http://localhost:4533 y crear el usuario administrador. **[verificar]** que el primer usuario sea administrador.
+7. Abrir http://localhost:4533 y crear el usuario administrador. Si el servidor no tiene pantalla (p. ej. Raspberry Pi), abrir `http://<IP-del-servidor>:4533` desde otro equipo de la red local. **[verificar]** que el primer usuario sea administrador.
 8. Escanear: esperar `ND_SCANSCHEDULE: 1h` o lanzarlo desde la interfaz. **[verificar]** ubicación del botón.
+   Verificación funcional (no solo sintaxis): `docker compose exec navidrome ls /music` debe listar `local` y `gratis`, y el conteo de canciones en la web debe coincidir con tu música.
 9. Jamendo (el script lee el entorno del shell, no `.env`):
    ```bash
    set -a; . ./.env; set +a
    python3 scripts/jamendo_descargar.py --genero lofi --cantidad 20
    ```
    Revisar `music/gratis/jamendo/ATRIBUCION.txt` y reescanear.
-10. Internet Archive: `pip install internetarchive && bash scripts/archive_descargar.sh <identificador>`; reescanear.
+10. Internet Archive: `pip install internetarchive && bash scripts/archive_descargar.sh <identificador>`; reescanear. El comando `ia` debe estar en el `PATH` (a veces queda en `~/.local/bin`); el script avisa si no lo encuentra.
 11. Tailscale en el servidor (guía oficial según tu sistema): `sudo tailscale up` y `tailscale ip -4` (IP `100.x`).
 12. Probar desde otro dispositivo de la tailnet: `http://<IP-Tailscale>:4533`.
 13. Tailscale en el iPhone (misma cuenta) y configurar la app (sección 7).
@@ -123,8 +124,21 @@ A verificar: **[verificar]** si iOS/la app permite HTTP; alternativa `tailscale 
 ## 8) Respaldo y mantenimiento
 
 - Respaldar `data/` (usuarios, favoritos, listas, historial), `.env` (secreto), `music/local/` (original) y conservar `ATRIBUCION.txt`.
-- Respaldo: `docker compose stop navidrome && tar -czf "$HOME/respaldo-musica-$(date +%F).tar.gz" data .env && docker compose start navidrome`
-- Restaurar: detener, `tar -xzf` el respaldo, iniciar.
+- Respaldo (desde la carpeta del repo; Navidrome se reinicia aunque `tar` falle):
+  ```bash
+  docker compose stop navidrome
+  tar -czf "$HOME/respaldo-musica-$(date +%F).tar.gz" data .env music/local; r=$?
+  docker compose start navidrome
+  [ "$r" -eq 0 ] && echo "Respaldo OK" || echo "tar falló (código $r); Navidrome ya se reinició"
+  ```
+  Si `MUSICA_LOCAL` apunta a otra carpeta, respáldala aparte (la ruta `music/local` solo cubre la carpeta del repo).
+- Restaurar (desde la carpeta del repo, sustituye la fecha):
+  ```bash
+  docker compose stop navidrome
+  tar -xzf "$HOME/respaldo-musica-AAAA-MM-DD.tar.gz"; r=$?
+  docker compose start navidrome
+  [ "$r" -eq 0 ] && echo "Restaurado" || echo "tar falló (código $r)"
+  ```
 - Actualizar: `docker compose pull && docker compose up -d` (la imagen usa `latest`; considerar fijar versión).
 - Logs: `docker compose logs --tail=100 navidrome`.
 
@@ -170,14 +184,14 @@ A verificar: **[verificar]** si iOS/la app permite HTTP; alternativa `tailscale 
 | A01 | Alta | R1: biblioteca posiblemente vacía sin `ND_MUSICFOLDER` | **Dudoso.** Navidrome escanea `/music` por defecto y las carpetas están montadas dentro de `/music`, por lo que probablemente no era un fallo. Se fijó `ND_MUSICFOLDER: /music` de forma explícita (inofensivo). **Verificar en la práctica:** `docker compose exec navidrome ls /music` y el conteo de canciones. |
 | A02 | Alta | Script de Jamendo no lee `.env` | Corregido en README (se carga con `set -a; . ./.env; set +a`). Falta rellenar `JAMENDO_CLIENT_ID`. |
 | A03 | Media | `.gitignore` no versionaba `music/*/.gitkeep`; un clon nuevo no tenía las carpetas | **Corregido.** Patrones `music/local/*` y `music/gratis/*`; ahora los `.gitkeep` están versionados. README añade `mkdir -p`. |
-| A04 | Media | README ejecutaba el script sin `bash`; `ia` puede no estar en el `PATH` | README usa `bash`. Aviso del `PATH` pendiente. |
-| A05 | Media | `docker compose config` solo valida sintaxis | Pendiente: añadir verificación funcional (`docker compose exec navidrome ls /music`). |
-| A06 | Media | Respaldo: `stop` + `tar` puede dejar Navidrome parado; falta incluir `music/local/` | Pendiente. |
-| A07 | Media | README e `iphone.md` afirman cosas como hechos (gratis, "solo tus dispositivos entran", descargas sin conexión) | Pendiente: alinear con **[verificar]**. |
-| A08 | Media | README y alcance prometen "historial" sin matiz | Pendiente: marcar como parcial. |
-| A09 | Baja | Script de Jamendo duplicaba atribución y dejaba archivos parciales | **Corregido** (descarga a `.part`, sin duplicados, errores omitidos). Pendiente: `limpio()` con nombres vacíos o `..`. |
+| A04 | Media | README ejecutaba el script sin `bash`; `ia` puede no estar en el `PATH` | **Corregido.** README usa `bash`; aviso del `PATH` en README y paso 10; el script comprueba `ia` y avisa. |
+| A05 | Media | `docker compose config` solo valida sintaxis | **Corregido.** Verificación funcional (`docker compose exec navidrome ls /music`) en README y paso 8. Sin ejecutar aquí. |
+| A06 | Media | Respaldo: `stop` + `tar` puede dejar Navidrome parado; falta incluir `music/local/` | **Corregido.** Comandos de respaldo y restauración que reinician Navidrome aunque falle `tar`; incluyen `music/local`. Sin probar en un servidor real. |
+| A07 | Media | README e `iphone.md` afirman cosas como hechos (gratis, "solo tus dispositivos entran", descargas sin conexión) | **Corregido.** Afirmaciones sin respaldo marcadas **[verificar]** o retiradas ("solo tus dispositivos entran" sustituido por aviso de `4533:4533` abierto en la red local). |
+| A08 | Media | README y alcance prometen "historial" sin matiz | **Corregido.** Marcado como parcial en README y en el alcance. |
+| A09 | Baja | Script de Jamendo duplicaba atribución y dejaba archivos parciales | **Corregido** (descarga a `.part`, sin duplicados, errores omitidos). `limpio()` ahora devuelve "desconocido" con nombres vacíos o `..` (quita puntos en los extremos). |
 | A10 | Baja | Sin filtro de licencia | Pendiente. |
-| A11 | Baja | Paso 7 usa `localhost` aunque el servidor sea una Raspberry sin pantalla | Pendiente. |
+| A11 | Baja | Paso 7 usa `localhost` aunque el servidor sea una Raspberry sin pantalla | **Corregido.** Paso 7 y README indican la IP del servidor si no tiene pantalla. |
 
 **Para los editores (Gemini, DeepSeek, ChatGPT):** resuelvan los pendientes, revisen que A01 sea de verdad un falso positivo y no cierren ninguno sin evidencia.
 
@@ -190,3 +204,4 @@ A verificar: **[verificar]** si iOS/la app permite HTTP; alternativa `tailscale 
 | 2026-11-08 | Claude Haiku | Borrador v1 |
 | 2026-11-08 | Claude Sonnet | Auditoría v1 (11 hallazgos) |
 | 2026-11-08 | Claude (orquestador) | Aplicadas correcciones A02, A03, A04 (README), A09; `ND_MUSICFOLDER` explícito |
+| 2026-11-08 | Claude Sonnet (editor) | Resueltos A04, A05, A06, A07, A08, A09 (`limpio()`), A11; A01 sigue dudoso; A10 y licencias sin tocar |

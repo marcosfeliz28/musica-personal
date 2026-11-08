@@ -16,7 +16,8 @@ DESTINO = os.path.join(os.path.dirname(__file__), "..", "music", "gratis", "jame
 
 
 def limpio(texto):
-    return re.sub(r'[\\/:*?"<>|]', "_", texto or "desconocido").strip()[:80]
+    t = re.sub(r'[\\/:*?"<>|]', "_", texto or "").strip().strip(".").strip()[:80]
+    return t or "desconocido"
 
 
 def main():
