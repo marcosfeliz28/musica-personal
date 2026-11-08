@@ -1,7 +1,9 @@
 .env
-# La música y la base de datos no se suben a GitHub
-music/**/*
-!music/**/.gitkeep
+# La música y la base de datos no se suben a GitHub (las carpetas sí, con .gitkeep)
+music/local/*
+music/gratis/*
+!music/local/.gitkeep
+!music/gratis/.gitkeep
 data/*
 !data/.gitkeep
 __pycache__/

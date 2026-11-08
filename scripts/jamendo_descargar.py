@@ -40,9 +40,18 @@ def main():
         carpeta = os.path.join(DESTINO, limpio(t["artist_name"]), limpio(t["album_name"]))
         os.makedirs(carpeta, exist_ok=True)
         archivo = os.path.join(carpeta, limpio(t["name"]) + ".mp3")
-        if not os.path.exists(archivo):
-            print("Descargando:", t["artist_name"], "-", t["name"])
-            urllib.request.urlretrieve(t["audiodownload"], archivo)
+        if os.path.exists(archivo):
+            continue
+        print("Descargando:", t["artist_name"], "-", t["name"])
+        parcial = archivo + ".part"
+        try:
+            urllib.request.urlretrieve(t["audiodownload"], parcial)
+            os.replace(parcial, archivo)
+        except Exception as e:
+            print("  Error, se omite:", e)
+            if os.path.exists(parcial):
+                os.remove(parcial)
+            continue
         with open(os.path.join(DESTINO, "ATRIBUCION.txt"), "a", encoding="utf-8") as f:
             f.write(f'{t["artist_name"]} - {t["name"]} | {t.get("license_ccurl", "")} | {t.get("shareurl", "")}\n')
 

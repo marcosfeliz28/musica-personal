@@ -11,19 +11,20 @@ Sistema propio para escuchar música sin suscripciones mensuales, con acceso des
 
 1. Instala Docker en tu computadora (o Raspberry Pi).
 2. `cp .env.example .env` y ajusta las rutas.
-3. Copia tu música a `music/local/` (o apunta `MUSICA_LOCAL` a tu carpeta actual).
+3. `mkdir -p music/local music/gratis data` y copia tu música a `music/local/` (o apunta `MUSICA_LOCAL` a tu carpeta actual).
 4. `docker compose up -d`
 5. Abre http://localhost:4533 y crea tu usuario administrador.
 
 ## Música gratuita y legal
 
 ```bash
-# Jamendo (requiere clave gratuita en JAMENDO_CLIENT_ID)
+# Jamendo: rellena JAMENDO_CLIENT_ID en .env y cárgalo en la terminal
+set -a; . ./.env; set +a
 python3 scripts/jamendo_descargar.py --genero lofi --cantidad 20
 
 # Internet Archive
 pip install internetarchive
-scripts/archive_descargar.sh <identificador-del-item>
+bash scripts/archive_descargar.sh <identificador-del-item>
 ```
 
 Revisa la licencia de cada pista (se anota en `music/gratis/jamendo/ATRIBUCION.txt`).
