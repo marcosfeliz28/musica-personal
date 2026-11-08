@@ -1,0 +1,7 @@
+.env
+# La música y la base de datos no se suben a GitHub
+music/**/*
+!music/**/.gitkeep
+data/*
+!data/.gitkeep
+__pycache__/
