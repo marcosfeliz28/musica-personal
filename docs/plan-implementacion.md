@@ -45,8 +45,21 @@ Verificación: una búsqueda devuelve resultados de ambos grupos y funciona desd
 4. Jellyfin como pestaña opcional.
 Verificación: modo avión con una lista descargada; restauración probada.
 
+## Fase 6: Ampliación de fuentes legales
+Meta: más variedad, siempre con licencia libre o compras sin DRM.
+1. Live Music Archive e Internet Archive 78 rpm: ampliar `archive_descargar.sh` con búsqueda por colección.
+2. Radio Browser: importar emisoras a Navidrome **[verificar]** formato y soporte.
+3. Emisoras independientes (SomaFM, NTS, KEXP) **[verificar]** URLs vigentes.
+4. Bandcamp: guía para descargas gratis y compras sin DRM hacia `music/local/`.
+5. ccMixter y Musopen: revisar API y términos **[verificar]**; solo se implementa si lo permiten.
+6. CDs propios: guía con fre:ac o abcde **[verificar]** ley local.
+7. ListenBrainz para historial completo; Picard junto a beets.
+8. Evaluar Funkwhale, Ampache y Audiobookshelf; no se instalan por defecto.
+Verificación: una pista de cada fuente nueva suena en Navidrome con su licencia anotada.
+Fuera de alcance: cualquier fuente sin licencia (piratería).
+
 ## Riesgos que se vigilan
 R2 (puerto abierto en la red local), R11 (repo público: nunca subir `.env`, claves ni IP de Tailscale), R13 (precios y límites de Tailscale y apps) y R15 (licencia de cada pista).
 
 ## Orden y dependencias
-Fase 1 antes que todas. Las fases 2 y 3 son independientes entre sí. La fase 4 necesita las dos. La fase 5 puede ir en paralelo desde la fase 2.
+Fase 1 antes que todas. Las fases 2 y 3 son independientes entre sí. La fase 4 necesita las dos. La fase 5 puede ir en paralelo desde la fase 2. La fase 6 va después de la fase 2.

@@ -63,6 +63,24 @@ Reemplazar las suscripciones mensuales con un sistema propio, gratuito y legal: 
 3. **Streaming:** Mopidy con Jamendo e Internet Archive.
 4. **Buscador unificado y página de inicio.**
 5. **Extras:** beets, Jellyfin opcional, uso sin conexión en el celular y respaldo automático.
+6. **Ampliación de fuentes legales:** ver sección 8b.
+
+## 8b. Ampliación de fuentes legales (fase 6)
+Principio: solo fuentes con licencia libre o compradas sin DRM. No se integran fuentes piratas.
+| Fuente | Tipo | Notas |
+|---|---|---|
+| Live Music Archive (Internet Archive) | Conciertos autorizados | Misma API que Internet Archive; reutiliza el script. |
+| Radio Browser | Directorio abierto de radios | Alimenta las emisoras de Navidrome. |
+| Emisoras independientes (SomaFM, NTS, KEXP) | Radio | **[verificar]** que sus transmisiones sigan abiertas. |
+| Bandcamp | Descarga gratis o compra sin DRM | Descarga manual; los archivos van a `music/local/`. |
+| ccMixter | Remixes Creative Commons | **[verificar]** API y licencias por pista. |
+| Musopen | Clásica de dominio público | **[verificar]** términos de uso. |
+| Internet Archive 78 rpm | Dominio público | Mismo script de Internet Archive. |
+| CDs y compras propias | Música propia | Copia con fre:ac o abcde; **[verificar]** la ley de copia privada de tu país. |
+| ListenBrainz | Historial completo | Cierra el límite del historial parcial. |
+| Picard | Etiquetas y carátulas | Complementa a beets. |
+| Funkwhale / Ampache | Alternativas a Navidrome | Solo evaluar; no se instalan por defecto. |
+| Audiobookshelf | Podcasts | Opcional; Navidrome los maneja de forma limitada **[verificar]**. |
 
 ## 9. Limitaciones
 - Solo música con licencia libre: repertorio de artistas independientes y dominio público.
