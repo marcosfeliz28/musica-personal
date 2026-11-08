@@ -98,3 +98,36 @@ Revisión estática. Compilan sin errores de sintaxis. No se ejecutaron ni se pr
 
 ### Decisión pendiente
 Ninguno de los dos se activa hasta que apruebes la fase 1 revisada y se apliquen las dos correcciones de arriba.
+
+## 8. Tercera auditoría (Claude): verificaciones y scripts v2
+
+### Discrepancia con el paquete recibido
+- El paquete llegó **cortado** (el bloque de `docker-compose.yml` no cierra y falta lo que seguía). Se trabajó con lo completo.
+- El `docker-compose.yml` del paquete dice ser "actual, en la rama", pero **no coincide con el repo**. El repo (gana el repo) usa `${MUSICA_LOCAL}` y `${MUSICA_GRATIS}` como dos volúmenes, sin `user` ni `ND_DATAFOLDER`, y sigue en `latest` y `"4533:4533"`. El del paquete monta `./music:/music:ro`, que es la versión del script bash descartado.
+
+### Pendientes resueltos con fuente (2026-11-08)
+| Tema | Resultado | Fuente |
+|---|---|---|
+| Free Music Archive | **Automatizar está prohibido.** Sección 7(e): "You will not attack the Site with automated requests or attempt to data mine the Site". Solo descarga manual. | freemusicarchive.org/terms_of_use |
+| ccMixter | Tiene API pública (Query API 2.0 beta). Su sección 8 solo exige aceptar las políticas. **No encontré permiso ni prohibición explícita de descargas masivas.** Licencia por pista. | ccmixter.org/terms y ccmixter.org/query-api |
+| Musopen | **NO VERIFICADO**: el servidor respondió 403 a la consulta automática. Mantener descarga manual. | musopen.org/tos |
+| Radios en Navidrome | La página de resumen lista "Internet Radios" entre sus funciones. La página específica de radios no existe (404). Soporte por versión **NO VERIFICADO**. | navidrome.org/docs/overview |
+| Jamendo | Sin cambios: restricción de caché y acceso sin conexión, más licencia de uso privado y personal limitada al marco de la API. | devportal.jamendo.com/api_terms_of_use |
+
+### Hallazgo nuevo sobre Live Music Archive
+Una búsqueda en Internet Archive devolvió **0 items de la colección `etree` con `licenseurl`**. Un script que falle cerrado bloquea todo Live Music Archive. Opciones: descarga manual desde la web, o `--forzar-licencia` tras leer a mano los permisos de cada banda. El campo `licenseurl` lo declara quien sube el item, así que no es prueba de derechos (ChatGPT, H02).
+
+### Scripts v2 (`propuestas/v2/`, no activos)
+Correcciones respecto a la sección 7:
+- **Jamendo:** se niega a descargar sin `--acepto-terminos-api`; con `--dry-run` solo lista. Omite pistas sin `license_ccurl`. Valida que lo recibido sea un MP3, limita el tamaño, pagina de 200 en 200 y la clave solo se lee del entorno o de `.env`.
+- **Internet Archive:** ya no trata colecciones ni texto libre como licencia; solo `licenseurl` de Creative Commons o dominio público. `--forzar-licencia` queda anotado como FORZADO. Elige original sobre derivado con el campo `source`, conserva subcarpetas saneadas y tiene `--dry-run`.
+
+Pruebas hechas: sintaxis, pruebas unitarias de las funciones puras, el bloqueo de Jamendo sin bandera, la falta de clave, un item sin licencia (cancela) y un item con licencia CC0 (lista sus pistas en `--dry-run`).
+**No probado:** ninguna descarga real, ni Jamendo con clave (no hay clave), ni el campo `license_ccurl` en una respuesta real.
+
+### Petición A: borrador del mensaje a Jamendo (para que lo envíes tú)
+Para: licensing@jamendo.com (dirección que aparece en los términos de la API).
+> Hola. Soy un usuario particular y no comercial. Quiero montar un servidor de música personal para mi uso privado, sin anuncios, sin ingresos y sin compartirlo con terceros. Me gustaría guardar en mi propio equipo algunas pistas con licencia Creative Commons descargadas con mi clave de la API, y escucharlas desde mis dispositivos. Los términos de la API indican que las aplicaciones no deben estar diseñadas para guardar contenido ni ofrecer acceso sin conexión. ¿Este uso personal está permitido, o prefieren que solo use el streaming o las descargas manuales desde la web? Gracias.
+
+### Pendiente para el propietario
+Aprobar la fase 1 revisada. Enviar el mensaje a Jamendo (opcional). Respuesta de DeepSeek (opcional). Un abogado debe revisar la copia de CDs propios.
