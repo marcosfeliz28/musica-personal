@@ -11,7 +11,7 @@ Reemplazar las suscripciones mensuales con un sistema propio, gratuito y legal: 
 - Acceso desde cualquier lugar con túnel gratuito (Tailscale; Cloudflare Tunnel como plan B).
 - Servidor: la PC que ya tiene, con **Windows**, encendida de forma continua.
 - Música: no tiene biblioteca previa; se llena con descargas legales y streaming.
-- Alcance: todo incluido, usable en cualquier circunstancia.
+- Alcance: todo incluido. "Cualquier circunstancia" significa: biblioteca accesible mientras servidor y red estén disponibles; sin conexión suenan solo las pistas descargadas en el dispositivo y autorizadas.
 - Fuera de alcance: Spotify, YouTube Music y cualquier servicio comercial.
 
 ## 3. Qué ya existe en el repo y se conserva
@@ -28,8 +28,8 @@ Reemplazar las suscripciones mensuales con un sistema propio, gratuito y legal: 
 |---|---|---|---|
 | Instalación | Docker | Navidrome nativo en Windows | **Mantener Docker** (Docker Desktop en Windows). Ya está escrito y probado en sintaxis. El nativo queda como alternativa. |
 | Celular | Solo iPhone | Cualquier celular | Generalizar `docs/iphone.md`; las apps Subsonic cubren Android (p. ej. Symfonium, DSub) **[verificar]**. |
-| Streaming de catálogo | No existe (Mopidy figura como "no necesario") | Mopidy con Jamendo e Internet Archive | Nueva fase 3. Se corrige `docs/herramientas.md`. |
-| Free Music Archive | Solo mencionada | Descarga incluida | Fase 2, tras revisar sus términos **[verificar]**. |
+| Streaming de catálogo | No existe (Mopidy figura como "no necesario") | Mopidy con Jamendo e Internet Archive | Fase 3 como piloto condicionado. Se corrige `docs/herramientas.md`. |
+| Free Music Archive | Solo mencionada | Descarga incluida | Solo manual: sus términos prohíben solicitudes automáticas (sección 7(e)). |
 | Radios por internet | Solo mencionadas | Configuradas en Navidrome | Fase 1, **[verificar]** soporte en la versión instalada. |
 | Buscador unificado y página de inicio | No existe | Web propia | Nueva fase 4. |
 | Jellyfin | Alternativa | Pestaña opcional | Fase 5, opcional. |
@@ -93,3 +93,12 @@ Principio: solo fuentes con licencia libre o compradas sin DRM. No se integran f
 ## 10. Pendiente
 - Aprobación de esta spec; luego plan de implementación por fases.
 - Confirmar con el usuario: Docker en vez de nativo, y la visibilidad del repo (hoy público).
+
+## 11. Decisiones tras las auditorías (2026-11-08)
+Ver `docs/consolidacion-auditoria.md`. Resumen:
+- Fase 1 reducida: Navidrome con versión fija, `127.0.0.1` más `tailscale serve`, una pista legal de prueba, respaldo y restauración probados.
+- Jamendo: descarga automática bloqueada hasta aclarar con Jamendo.
+- Free Music Archive: solo manual. Musopen y ccMixter: sin automatización hasta leer sus términos.
+- Live Music Archive y Internet Archive: solo con licencia declarada, o forzada tras revisión humana.
+- Mopidy y buscador propio: condicionados a un piloto.
+- Fuera de alcance, sin excepción: fuentes sin licencia.

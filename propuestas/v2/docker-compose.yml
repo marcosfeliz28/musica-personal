@@ -1,0 +1,23 @@
+# PROPUESTA v2, no activa. Fase 1 revisada.
+# - Versión fija en vez de latest. Elegir una versión PROBADA al implementar:
+#   el 2026-11-08 existían 0.54.1, 0.60.3 y 0.64.2 en Docker Hub.
+# - Puerto solo en loopback. El acceso desde el celular se hace con `tailscale serve`
+#   (ver docs/plan-implementacion.md, fase 1, paso 4). Sin eso el celular no conecta.
+# - Se conservan MUSICA_LOCAL y MUSICA_GRATIS como dos carpetas, como en el repo.
+services:
+  navidrome:
+    image: deluan/navidrome:0.64.2
+    container_name: navidrome
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4533:4533"
+    environment:
+      ND_SCANSCHEDULE: 1h
+      ND_LOGLEVEL: info
+      ND_SESSIONTIMEOUT: 24h
+      ND_MUSICFOLDER: /music
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ./data:/data
+      - ${MUSICA_LOCAL:-./music/local}:/music/local:ro
+      - ${MUSICA_GRATIS:-./music/gratis}:/music/gratis:ro
