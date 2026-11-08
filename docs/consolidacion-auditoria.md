@@ -72,3 +72,29 @@ Fallas que lo descartan tal cual:
 - Archivo `docs/auditoria-gemini.md` en el repo.
 - Aprobación de este documento antes de cambiar scripts, compose o fases.
 - Consulta a Jamendo y, para la copia de CDs, a un abogado.
+
+## 7. Revisión de lo recibido después (2026-11-08)
+
+### Auditoría de Gemini
+Guardada tal cual en `docs/auditoria-gemini.md`. Sigue incluyendo el hallazgo G03, que es falso: `PLAN-COMPLETO.md` ya usa `--genero lofi --cantidad 20`. Corrige solo la cifra de usuarios de Tailscale; su veredicto de fase 1 no cambia.
+
+### Scripts propuestos (`propuestas/`)
+Revisión estática. Compilan sin errores de sintaxis. No se ejecutaron ni se probó la red.
+
+**`propuestas/jamendo_descargar.py`**
+- Verificado en la documentación de la API de Jamendo: existen `ccnc`, `ccnd`, `ccsa`, `boost`, `audiodlformat` (mp31, mp32, ogg, flac), `type=single albumtrack`, `include=licenses` y el límite de 200 resultados.
+- Mejoras reales: carga `.env`, nombres seguros en Windows, ID de pista en el nombre del archivo, timeouts, descarga parcial con `.part` y atribución sin duplicados.
+- **No resuelve la restricción contractual de Jamendo** (sección 1). Sigue descargando a una biblioteca permanente sin ninguna puerta. Propuesta: exigir una bandera explícita (por ejemplo `--acepto-terminos-api`) y no ejecutar sin ella, hasta consultar a Jamendo.
+- `license_ccurl` no aparece en el texto de la página de documentación que revisé. Probar con una respuesta real antes de confiar en él.
+- Sin etiquetas de licencia en el archivo y sin `--dry-run` (ideas del script bash, aún sin recuperar).
+
+**`propuestas/archive_descargar.py`**
+- Mejoras reales: funciona en Windows sin Bash ni `ia`, verifica `licenseurl` antes de bajar, evita duplicar FLAC y MP3, usa `.part`, timeouts y atribución sin duplicados.
+- **Problema legal:** `COLECCIONES_AUTORIZADAS` trata como libres las colecciones `georgeblood` y `78rpm`. Pertenecer a esa colección no prueba que una grabación sea de dominio público (ChatGPT, H13). Propuesta: quitar ambas de la lista por defecto.
+- `etree` (Live Music Archive) y `freemusicarchive`: permitir solo con una nota en la atribución y revisión humana **[verificar]**.
+- Para elegir entre original y derivado conviene usar el campo `source` de los metadatos, no solo el nombre del archivo.
+- Archivos con el mismo nombre en subcarpetas del item pueden pisarse.
+- Hay que actualizar README y `PLAN-COMPLETO.md`, que aún citan `archive_descargar.sh`.
+
+### Decisión pendiente
+Ninguno de los dos se activa hasta que apruebes la fase 1 revisada y se apliquen las dos correcciones de arriba.
