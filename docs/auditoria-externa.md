@@ -32,6 +32,9 @@ Revisa los archivos del repositorio (adjuntos o en el enlace) y audita:
    ccMixter, Musopen, Bandcamp, Radio Browser, emisoras independientes) y de copiar CDs propios.
 5. Viabilidad del plan por fases y de las dependencias entre fases.
 6. Qué marcas [verificar] se pueden cerrar con evidencia.
+7. Propuestas de mejora: herramientas, arquitectura, orden de fases o funciones que
+   harían la plataforma más completa y variada, siempre con música legal y herramientas
+   de código abierto o gratuitas.
 
 Reglas:
 - No inventes datos. Si no puedes verificar algo (precios, límites, versiones, términos,
@@ -40,13 +43,15 @@ Reglas:
 - No confirmes un hallazgo sin evidencia.
 - No es asesoría legal; señala qué debería revisar un abogado.
 - No recomiendes fuentes sin licencia.
+- Para cada mejora, di si es gratis y si el proyecto la necesita ahora o después.
 
 Formato de salida en español:
 A) Tabla: ID | Severidad (Alta/Media/Baja) | Archivo y sección | Hallazgo | Evidencia (enlace) | Corrección propuesta
 B) Lista de [verificar] cerrados, con la fuente.
 C) Lista de [verificar] que siguen abiertos y por qué.
 D) Lo que falta y no está en el plan.
-E) Veredicto: listo para empezar la fase 1 (sí/no) y por qué.
+E) Propuestas de mejora: tabla con Propuesta | Beneficio | Costo (dinero y esfuerzo) | Riesgo | Enlace de respaldo | Prioridad (1 a 3).
+F) Veredicto: listo para empezar la fase 1 (sí/no) y por qué.
 ```
 
 ## Puntos que pedimos mirar con más atención
