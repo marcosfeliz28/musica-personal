@@ -1,0 +1,74 @@
+# Consolidación de auditorías (ChatGPT y Gemini)
+
+Estado: BORRADOR para revisión del propietario. Solo documentación: no autoriza instalar ni cambiar código.
+Fecha: 2026-11-08
+Fuentes: `docs/auditoria-chatgpt.md`, auditoría de Gemini (pegada en la conversación, aún sin archivo en el repo), un script bash de origen no indicado. DeepSeek: sin respuesta.
+Regla: el acuerdo entre dos modelos no prueba un hecho. Cada decisión cita lo que se verificó.
+
+## 1. Verificado por Claude con fuente primaria
+| Hecho | Resultado | Fuente |
+|---|---|---|
+| `ND_MUSICFOLDER` en la imagen oficial de Navidrome | El Dockerfile define `ENV ND_MUSICFOLDER=/music` y `ND_DATAFOLDER=/data`. A01 se cierra como falso positivo. Falta probar el escaneo real. | Dockerfile en github.com/navidrome/navidrome |
+| Etiquetas de imagen | Existen `0.54.1` y `0.60.3`. La más reciente vista el 2026-11-08 fue `0.64.2`. Fijar una versión probada al implementar, no una vieja. | Docker Hub, deluan/navidrome |
+| Jamendo y el acceso sin conexión | Los términos de la API dicen: las aplicaciones "must not be specifically designed to cache the content nor offering an offline access to the content". Está en otra cláusula, no en la 3.3. La 3.3 trata del uso no comercial. | devportal.jamendo.com/api_terms_of_use |
+| Jamendo y uso personal | Existe una licencia "para fines privados y personales", limitada al marco de uso de la API. | misma página |
+| Texto de `PLAN-COMPLETO.md` | Usa `--genero lofi --cantidad 20`. El hallazgo G03 de Gemini es falso. | `docs/PLAN-COMPLETO.md` |
+
+Alcance real de la restricción de Jamendo: es una zona gris para un script personal, no una prohibición probada. Se resuelve preguntando a Jamendo, o evitando la descarga automática.
+
+## 2. Tabla de decisiones
+| Tema | ChatGPT | Gemini | Decisión |
+|---|---|---|---|
+| Puerto 4533 | Loopback + Tailscale Serve | Igual | **Adoptar.** Un solo esquema; actualizar URL de clientes. |
+| Imagen Navidrome | Fijar versión | Fijar `0.60.3` | **Adoptar fijar versión.** Elegir la versión al implementar; verificar compatibilidad. |
+| A01 | Definido, falta prueba | Falso positivo | **Cerrado en configuración.** Prueba real en fase 1. |
+| Jamendo automático | Bloquear hasta aclarar | No lo ve | **Adoptar bloqueo.** Descarga manual o streaming. Consultar a Jamendo. |
+| Filtro de licencia | Evaluar según uso | Filtro NC/ND/SA | **Registrar la licencia exacta por pista.** No excluir NC/ND para uso privado sin criterio. |
+| Internet Archive | Fail closed por metadatos | Python + `licenseurl` | **Adoptar fail closed.** Los metadatos son declarados por terceros; revisión humana. |
+| Free Music Archive y Musopen | Solo manual | Solo manual | **Adoptar.** Sin automatización. |
+| ccMixter | No verificado | API oficial | **Dejar abierto.** Leer términos antes de decidir. |
+| Mopidy | Prueba piloto antes | Eliminar la fase | **Piloto.** `mopidy-jamendo` no confirmado en Mopidy 4; `mopidy-internetarchive` sí figura. |
+| Buscador propio | Solo si hace falta | Absorbe a Mopidy | **Condicionado a la prueba piloto.** |
+| Respaldo y restauración | Adelantar a fases 1–2 | Respaldo nativo `ND_BACKUP_*` | **Adelantar.** Evaluar `ND_BACKUP_*` **[verificar]**; incluir `ATRIBUCION.txt` y `music/gratis`. |
+| Comandos de Windows | Guías PowerShell | Igual | **Adoptar.** |
+| Docker Desktop y arranque | Sin verificar | Arranca tras iniciar sesión | **Plausible, sin probar.** Probar con reinicio real. |
+| ListenBrainz | Fase 3 | Fase 1 | **Opcional.** Privacidad: se envían hábitos de escucha. Condiciones **[verificar]**. |
+| Promesa "cualquier circunstancia" | Es falsa | No lo toca | **Adoptar reformulación.** Ver sección 4. |
+| Radios | No grabar ni retransmitir | Abiertas | **Solo escuchar.** No éxito obligatorio hasta verificar soporte. |
+| Tailscale límites | Abierto | "Cerrado" con cifras contradictorias | **Abierto.** |
+| Ley de copia privada | Abogado | Cita ley dominicana | **Abierto.** Pregunta para abogado. |
+| Veredicto fase 1 | No lista tal cual | Sí, con dos ajustes | **No lista tal cual.** Ver sección 3. |
+
+## 3. Fase 1 revisada (propuesta)
+Alcance: probar el núcleo sin descargas automáticas.
+1. Docker Desktop en Windows; inicio de sesión automático solo si se acepta el riesgo **[verificar]**.
+2. Navidrome con versión fija y `127.0.0.1:4533`.
+3. `tailscale serve` hacia el puerto local; probar en el celular fuera de casa.
+4. Una pista de prueba con licencia documentada, copiada a mano.
+5. Verificar el escaneo real de `/music`, listas, favoritos y aleatorio.
+6. Respaldo y restauración probados una vez.
+7. Contraseña propia, sin puertos del router abiertos.
+Criterio de éxito: suena la pista de prueba desde el celular con datos móviles y se restaura un respaldo.
+Sin descargas automáticas, sin Mopidy y sin buscador propio en esta fase.
+
+## 4. Cambios a los documentos existentes (pendientes de aprobación)
+- Promesa: "Biblioteca local accesible mientras servidor y red estén disponibles; sin conexión suenan solo las pistas descargadas en el dispositivo y autorizadas."
+- Fase 2 se divide: 2a (manifiesto de procedencia y descarga manual) y 2b (automatización por fuente con permiso).
+- Fase 3 y 4 quedan condicionadas a una prueba piloto.
+- `PLAN-COMPLETO.md`: añadir recetas PowerShell.
+
+## 5. Script bash recibido: no aplicar
+Ideas aprovechables: `--dry-run`, etiquetas de licencia con mutagen, guía de restauración, `SECURITY.md`.
+Fallas que lo descartan tal cual:
+1. Etiqueta con la licencia del item todos los MP3 y FLAC de `./music`, y pisaría la licencia de otras pistas.
+2. Elimina `--genero` y `--buscar`, exige la clave por línea de comandos y quita las carpetas Artista/Álbum y las correcciones de descarga parcial.
+3. Monta `./music` entera y rompe `MUSICA_LOCAL` y `MUSICA_GRATIS` del `.env`.
+4. Añade `music/` y `data/` al `.gitignore` y anula las excepciones de `.gitkeep`.
+5. Usa `read -p`, `rsync` y `chown`, que no sirven en tareas de Windows.
+6. Hace `git push` sin revisión y marca como cerrado lo que nadie probó.
+
+## 6. Pendiente
+- Respuesta de DeepSeek.
+- Archivo `docs/auditoria-gemini.md` en el repo.
+- Aprobación de este documento antes de cambiar scripts, compose o fases.
+- Consulta a Jamendo y, para la copia de CDs, a un abogado.
