@@ -61,7 +61,7 @@ def seleccionar(archivos, preferido="mp3"):
     grupos = {}
     for f in archivos:
         n = f.get("name")
-        if not isinstance(n, str):
+        if not isinstance(n, str) or str(f.get("private", "")).lower() == "true":
             continue
         base, ext = os.path.splitext(n)
         ext = ext.lower().lstrip(".")
@@ -120,6 +120,9 @@ def main():
     if not meta:
         sys.exit(f"No se encontró el ítem '{item}'.")
 
+    if str(meta.get("access-restricted-item", "")).lower() == "true":
+        sys.exit(f"Cancelado: '{item}' es de acceso restringido en Internet Archive (requiere cuenta o permiso); "
+                 "sus archivos no se pueden descargar de forma pública.")
     libre, lic = licencia_declarada(meta)
     if not libre and not a.forzar_licencia:
         sys.exit(f"Cancelado: '{item}' no declara licencia libre (detectado: '{lic}'). "
