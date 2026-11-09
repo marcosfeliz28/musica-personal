@@ -9,7 +9,7 @@ Meta: probar el núcleo de punta a punta con una sola pista legal, sin descargas
 No incluye: descargas automáticas, Mopidy ni buscador propio.
 1. Instalar Docker Desktop en Windows. Probar el arranque tras un reinicio completo **[verificar]**: Docker Desktop puede levantar los contenedores solo después de iniciar sesión.
 2. Copiar `.env.example` a `.env`; ajustar `TZ` y las rutas. Mantener `MUSICA_LOCAL` y `MUSICA_GRATIS` como dos carpetas.
-3. Navidrome con **versión fija probada** (no `latest`) y puerto `127.0.0.1:4533:4533`. Ver `propuestas/v2/docker-compose.yml`. Elegir la versión al implementar; el 2026-11-09 la más reciente era `0.64.2` (igual que `latest`) y su escaneo dio 28 HIGH y 0 CRITICAL, todos con corrección disponible río arriba: ver `docs/escaneo-imagen-navidrome.md`. Volver a escanear antes de actualizar.
+3. Navidrome con **versión fija probada** (no `latest`) y puerto `127.0.0.1:4533:4533`. Ver `propuestas/v2/docker-compose.yml`. Elegir la versión al implementar; el 2026-11-09 la más reciente era `0.64.2` (igual que `latest`) y su escaneo dio 28 HIGH y 0 CRITICAL, todos con corrección disponible en sus proyectos de origen: ver `docs/escaneo-imagen-navidrome.md`. Volver a escanear antes de actualizar.
 4. `tailscale serve` hacia el puerto local, para acceso privado con HTTPS dentro de la tailnet **[verificar]** comando exacto y activación de HTTPS en la versión instalada. Actualizar la URL en la app del celular.
 5. Copiar a mano **una pista de prueba** con licencia documentada, y anotarla en `music/local/ATRIBUCION.txt`.
 6. Verificar `docker compose exec navidrome ls /music`, el escaneo real, listas, favoritos y aleatorio.
