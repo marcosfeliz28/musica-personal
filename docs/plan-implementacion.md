@@ -18,8 +18,14 @@ No incluye: descargas automáticas, Mopidy ni buscador propio.
 Criterio de éxito: suena la pista de prueba desde el celular con datos móviles, y se restaura un respaldo sin pérdida.
 Radios por internet: opcionales hasta verificar el soporte en la versión elegida.
 
-## Fase 1B (opcional): servidor en la nube
-Solo si el propietario elige el modo B o C. Ver `docs/despliegue-pc-y-nube.md`. No empieza sin que el propietario cree su cuenta de Oracle.
+## Fase 1B: servidor de respaldo en la nube (modo C, decidido por el propietario)
+La PC sigue siendo la principal; esta fase va después de que la fase 1 funcione. Ver `docs/despliegue-pc-y-nube.md`.
+1. El propietario crea su cuenta de Oracle (Claude no puede).
+2. Máquina Arm Always Free con Linux, Docker, Tailscale y Navidrome con la misma versión que la PC.
+3. Música: Syncthing de PC a nube. Base de datos: respaldo de la PC copiado a la nube.
+4. Simulacro de fallo: apagar la PC, restaurar en la nube y verificar; luego volver a la PC.
+5. Copia adicional en disco externo, porque Oracle puede recuperar una máquina inactiva.
+Criterio de éxito: tras el simulacro, usuario, favoritos, listas y música están en la nube y suena una pista desde el celular.
 
 ## Fase 2: Procedencia y descargas con permiso
 Meta: llenar la biblioteca con música cuyos derechos estén documentados.

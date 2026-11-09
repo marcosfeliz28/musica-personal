@@ -105,3 +105,5 @@ Ver `docs/consolidacion-auditoria.md`. Resumen:
 
 ## 12. Despliegue en PC y en la nube (2026-11-09)
 Requisito del propietario: poder manejarlo desde la nube y desde la PC. Se resuelve con una sola receta de Docker que corre en los dos sitios; ver `docs/despliegue-pc-y-nube.md`. Modos: A solo PC, B solo nube, C ambos con una sola base activa. La nube propuesta es Oracle Always Free, con el riesgo documentado de recuperación por inactividad. Render gratis queda descartado (sistema de archivos efímero) y Fly.io no tiene plan gratuito para cuentas nuevas.
+
+Decisión del propietario (2026-11-09): **modo C**, PC principal y nube de respaldo, con una sola base activa y un simulacro de fallo obligatorio. Ver `docs/despliegue-pc-y-nube.md`.

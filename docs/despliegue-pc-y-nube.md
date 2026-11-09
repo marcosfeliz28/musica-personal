@@ -51,5 +51,30 @@ Riesgos documentados por Oracle: puede recuperar máquinas "inactivas" (uso de p
 - No abrir puertos públicos. Todo el acceso pasa por Tailscale.
 - Contraseñas distintas en Navidrome, Tailscale y Oracle.
 
-## Pendiente
-Decisión del propietario: modo A, B o C, y si crea la cuenta de Oracle.
+## Decisión del propietario (2026-11-09): modo C
+**PC principal, nube de respaldo.** Si la PC falla, el sistema sigue desde la copia de la nube.
+Interpretación de Claude de "backup en el A": copia de respaldo en la nube. Si el propietario quiso otra cosa, se corrige aquí.
+
+### Qué se copia y cómo
+| Qué | Cómo | Estado |
+|---|---|---|
+| Música | Syncthing, de la PC a la nube, nube en "solo recibir" y con versionado | **[verificar]** nombres de las opciones; no probado |
+| Base de datos (`data/`) | Respaldo periódico en la PC y copia del archivo a la nube por `scp` sobre Tailscale (Windows trae cliente OpenSSH) | **[verificar]**; no probado |
+| `.env` | Copia manual y segura. Nunca al repo | |
+Aviso: lo que cambie en la PC después del último respaldo (favoritos, listas, reproducciones) **se pierde** si hay que pasar a la nube.
+
+### Pasar a la nube (si la PC falla)
+1. Confirma que la PC está de verdad apagada o fuera de servicio. **Nunca dos servidores con usuarios activos.**
+2. En la nube: restaura el último respaldo de `data/` y levanta Navidrome.
+3. En el celular, usa la dirección de la nube (guarda las dos direcciones en la app; Ultrasonic declara varios servidores **[verificar]** en la app que elijas).
+
+### Volver a la PC
+1. Para Navidrome en la nube y haz un respaldo de su `data/`.
+2. Cópialo a la PC, restaura y levanta.
+3. Deja la nube detenida, con el respaldo nuevo.
+
+### El riesgo que no se puede ignorar
+Un servidor de respaldo casi siempre parado es justo lo que Oracle puede recuperar por inactividad (documentación de Oracle). Por eso **la nube no puede ser tu única copia**: mantén además una copia en un disco externo. Mitigación contra la recuperación: no verificada.
+
+### Prueba obligatoria antes de confiar
+Simular el fallo: apagar la PC, restaurar en la nube y comprobar usuario, favoritos, listas y música. Hasta hacerlo, el respaldo en la nube cuenta como **no probado**.
