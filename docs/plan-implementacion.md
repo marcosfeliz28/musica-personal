@@ -5,6 +5,7 @@ Regla: no se instala ni se escribe código de una fase hasta que el usuario la a
 Cada fase termina con una verificación real. Si algo no se puede probar, queda como **[verificar]**.
 
 ## Fase 1: Núcleo mínimo (revisada tras tres auditorías)
+Estado (2026-11-09): ejecutada en la PC del propietario; ver `docs/resultado-fase1-pc.md`. Pendiente de confirmar: reproducción en el iPhone con datos móviles, arranque tras reiniciar Windows y copia del respaldo a un disco externo.
 Meta: probar el núcleo de punta a punta con una sola pista legal, sin descargas automáticas.
 No incluye: descargas automáticas, Mopidy ni buscador propio.
 1. Instalar Docker Desktop en Windows. Probar el arranque tras un reinicio completo **[verificar]**: Docker Desktop puede levantar los contenedores solo después de iniciar sesión.

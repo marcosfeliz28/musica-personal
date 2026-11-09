@@ -7,3 +7,6 @@ music/gratis/*
 data/*
 !data/.gitkeep
 __pycache__/
+
+# Copias de trabajo de las sesiones locales de Claude Code
+.claude/worktrees/
