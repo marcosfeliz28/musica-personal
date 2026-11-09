@@ -55,21 +55,21 @@ Esa dirección es privada, pero no la pegues en el repo ni en chats públicos.
 Instala una app compatible con Subsonic **[verificar]** precio y descargas sin conexión. Servidor: la dirección HTTPS del paso 6, con tu usuario y contraseña. Prueba con **datos móviles**, con el Wi-Fi apagado: debe sonar la pista de prueba.
 
 ## 8. Respaldo y restauración
-Respaldo (para el contenedor un momento):
+Usa el script `propuestas\windows\respaldo.ps1`. Detalles de lo que hace y lo que se probó: `docs/prueba-respaldo-powershell.md`.
+Por qué no se comprime la música: `Compress-Archive` limita el tamaño máximo a 2 GB e ignora archivos ocultos (documentación de Microsoft). Solo `data\` va en un `.zip`; la música se copia sin comprimir con `robocopy /E`, que no borra nada en el destino.
+
+Elige un disco tuyo para el destino (contiene `.env`, que es secreto; mejor cifrado).
 ```powershell
-docker compose stop navidrome
-Compress-Archive -Path data, music\local, music\gratis -DestinationPath "$HOME\respaldo-musica-$(Get-Date -Format yyyy-MM-dd).zip" -Force
-docker compose start navidrome
+# Respaldar (para Navidrome un momento y lo vuelve a iniciar siempre)
+.\propuestas\windows\respaldo.ps1 -Accion Respaldar -Destino D:\respaldos
 ```
-Restauración de prueba:
+Prueba de restauración (obligatoria antes de confiar en el respaldo):
 ```powershell
-docker compose stop navidrome
-Rename-Item data data.bak
-Expand-Archive -Path "$HOME\respaldo-musica-AAAA-MM-DD.zip" -DestinationPath . -Force
-docker compose start navidrome
+.\propuestas\windows\respaldo.ps1 -Accion Restaurar -Destino D:\respaldos -ConMusica
 ```
-Comprueba que siguen tu usuario, el favorito y la lista. Solo entonces borra `data.bak`.
-El respaldo automático de Navidrome (`ND_BACKUP_*`) guarda solo la base de datos. **[verificar]** si lo activas.
+Comprueba que siguen tu usuario, el favorito y la lista. Lo anterior queda en `data.bak-<fecha>`; bórralo solo cuando estés seguro. Si el `.zip` está dañado, el script lo rechaza por su suma SHA-256 y no toca nada.
+Si PowerShell bloquea el script por la política de ejecución, avísame y vemos la opción con permisos mínimos **[verificar]**.
+El respaldo automático de Navidrome (`ND_BACKUP_*`) guarda solo la base de datos **[verificar]** si lo activas.
 
 ## 9. Reinicio
 Reinicia Windows sin abrir sesión de inmediato y comprueba si Navidrome responde. Anota el resultado. Si no responde hasta iniciar sesión, es la limitación conocida de Docker Desktop.
