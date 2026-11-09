@@ -31,6 +31,7 @@ Verificación: una pista de cada fuente permitida suena en Navidrome con su lice
 
 ## Fase 3: Streaming con Mopidy (solo piloto)
 Meta: buscar y reproducir catálogos sin descargar. Condicionada a una prueba piloto: `mopidy-jamendo` no está confirmado en Mopidy 4; `mopidy-internetarchive` sí figura.
+Resultado del piloto (2026-11-09, ver `docs/piloto-mopidy.md`): búsqueda y exploración de Internet Archive funcionan; Mopidy no filtra por licencia y reproduce en el servidor, no en el celular; `mopidy-jamendo` tiene su última versión de 2021. **Decisión pendiente del propietario:** mantener Mopidy solo para buscar, o reemplazarlo por una web propia con reproductor y botón "guardar" que use los scripts con licencia.
 1. Evaluar extensiones de Mopidy para Jamendo e Internet Archive **[verificar]** que existan y estén mantenidas.
 2. Instalar Mopidy como servicio.
 3. Acción "guardar en mi biblioteca" que baje la pista a `music/gratis/`.
