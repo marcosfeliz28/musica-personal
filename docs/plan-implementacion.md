@@ -18,6 +18,9 @@ No incluye: descargas automáticas, Mopidy ni buscador propio.
 Criterio de éxito: suena la pista de prueba desde el celular con datos móviles, y se restaura un respaldo sin pérdida.
 Radios por internet: opcionales hasta verificar el soporte en la versión elegida.
 
+## Fase 1B (opcional): servidor en la nube
+Solo si el propietario elige el modo B o C. Ver `docs/despliegue-pc-y-nube.md`. No empieza sin que el propietario cree su cuenta de Oracle.
+
 ## Fase 2: Procedencia y descargas con permiso
 Meta: llenar la biblioteca con música cuyos derechos estén documentados.
 Puerta legal previa a cada fuente: derechos de la obra, términos del servicio o API, y permiso para automatizar. Sin las tres, solo descarga manual.
