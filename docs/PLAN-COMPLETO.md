@@ -1,3 +1,5 @@
+> **DOCUMENTO HISTÓRICO (2026-11-09).** Es el plan anterior, anterior a las auditorías de ChatGPT, Gemini y Claude. Lo vigente está en `docs/spec-diseno.md`, `docs/plan-implementacion.md` y `docs/consolidacion-auditoria.md`. No sigas sus pasos de instalación: usan el compose anterior (`latest`, puerto abierto) y comandos de Bash.
+
 # Plan completo: Música personal (Navidrome + Tailscale + app Subsonic en iPhone)
 
 > **Documento de trabajo para edición por varios modelos.**
