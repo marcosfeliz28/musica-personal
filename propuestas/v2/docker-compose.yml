@@ -1,3 +1,6 @@
+# IMPORTANTE: copia este archivo a la RAÍZ del repo (donde está .env) antes de usarlo.
+# Si lo ejecutas desde propuestas/v2, ./data y ./music se resolverían bajo esta carpeta
+# y Navidrome vería una biblioteca vacía. Guía: docs/guia-fase1-windows.md, paso 3.
 # PROPUESTA v2, no activa. Fase 1 revisada.
 # - Versión fija en vez de latest. Elegir una versión PROBADA al implementar:
 #   el 2026-11-08 existían 0.54.1, 0.60.3 y 0.64.2 en Docker Hub.

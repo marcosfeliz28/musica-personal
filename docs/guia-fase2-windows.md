@@ -14,9 +14,10 @@ py -3 --version
 ```
 
 ## 2. Activar el script de Internet Archive
-Solo después de aprobar `propuestas\v2`:
+Solo después de aprobar `propuestas\v2`. Hay que copiar también `comun.py`, que comparten los scripts:
 ```powershell
 Copy-Item propuestas\v2\archive_descargar.py scripts\archive_descargar.py
+Copy-Item propuestas\v2\comun.py scripts\comun.py
 py -3 scripts\archive_descargar.py <identificador> --dry-run
 ```
 Lee la licencia que muestra. Si es correcta:
